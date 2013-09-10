@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 gemspec :name => "chef"
 
+gem "ohai", :git => "https://github.com/oferrigni/ohai", :branch => "multijson.6.18.0"
 gem "activesupport", "< 4.0.0", :group => :compat_testing, :platform => "ruby"
 
 group(:docgen) do

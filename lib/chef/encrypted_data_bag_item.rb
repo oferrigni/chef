@@ -20,7 +20,7 @@ require 'base64'
 require 'openssl'
 require 'chef/data_bag_item'
 require 'yaml'
-require 'yajl'
+require 'multi_json'
 require 'open-uri'
 
 # An EncryptedDataBagItem represents a read-only data bag item where
@@ -148,7 +148,7 @@ class Chef::EncryptedDataBagItem
       # Strings) that do not produce valid JSON when serialized without the
       # wrapper.
       def serialized_data
-        Yajl::Encoder.encode(:json_wrapper => plaintext_data)
+        MultiJson.dump(:json_wrapper => plaintext_data)
       end
     end
 
@@ -233,8 +233,8 @@ class Chef::EncryptedDataBagItem
       end
 
       def for_decrypted_item
-        Yajl::Parser.parse(decrypted_data)["json_wrapper"]
-      rescue Yajl::ParseError
+        MultiJson.load(decrypted_data)["json_wrapper"]
+      rescue MultiJson::LoadError
         # convert to a DecryptionFailure error because the most likely scenario
         # here is that the decryption step was unsuccessful but returned bad
         # data rather than raising an error.
